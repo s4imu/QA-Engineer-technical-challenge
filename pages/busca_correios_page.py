@@ -23,8 +23,9 @@ class BuscaCorreiosPage(BasePage):
 
     def verificar_busca_realizada(self, locator, valor_esperado):
         self.aguardar_elemento_aparecer(locator)
-        elemento = self.encontrar_elemento(locator)
-        assert valor_esperado in elemento.text, f"O texto '{elemento.text}' não contém a resposta esperada '{valor_esperado}'"
+        elementos = self.encontrar_elementos(locator)
+        resultados = [elemento.text for elemento in elementos]
+        assert any(valor_esperado in resultado for resultado in resultados), f"Os resultados: '{resultados}' não contêm a resposta esperada: '{valor_esperado}'"
 
 
 
