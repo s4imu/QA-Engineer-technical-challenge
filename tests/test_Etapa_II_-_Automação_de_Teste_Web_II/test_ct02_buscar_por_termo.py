@@ -15,7 +15,7 @@ class TestCT02Correios:
         termo = "Lojas Bemol"
         tipo_cep = "ALL"
         correios_busca_page = BuscaCorreiosPage()
-
+        campo_resultado = correios_busca_page.campo_logadouro_resultado
 
         correios_busca_page.realizar_busca(termo, tipo_cep)
-        correios_busca_page.verificar_busca_realizada()
+        correios_busca_page.verificar_busca_realizada(campo_resultado, termo)

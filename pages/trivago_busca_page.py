@@ -10,25 +10,28 @@ class BuscaTrivagoPage(BasePage):
         self.campo_busca = (By.ID, "input-auto-complete")
         self.escolha_submenu = (By.XPATH, "//span[@data-testid='suggestion-subtitle' and text()='Cidade · Amazonas, Brasil']")
         self.btn_pesquisar = (By.XPATH, "//span[text()='Pesquisar']")
+        self.btn_calendario = (By.XPATH, "//button[@data-testid='search-form-calendar-checkin']")
         self.select_ordenar_por = (By.ID, "sorting-selector")
         self.lista_nome_acomodacoes = (By.XPATH, "//span[@itemprop='name']")
         self.lista_notas_acomodacoes = (By.XPATH, "//span[@itemprop='ratingValue']")
         self.lista_valores_acomodacoes = (By.XPATH, "//b[contains(text(),'R$')]")
 
     def realizar_busca(self, termo_busca):
-        self.type(self.campo_busca, termo_busca)
-        self.wait_element_appears(self.escolha_submenu)
-        self.click(self.escolha_submenu)
-        self.wait_element_disappear(self.escolha_submenu)
-        self.click(self.btn_pesquisar)
+        self.digitar(self.campo_busca, termo_busca)
+        self.aguardar_elemento_aparecer(self.escolha_submenu)
+        self.clicar(self.escolha_submenu)
+        self.aguardar_elemento_desaparecer(self.escolha_submenu)
+        self.clicar(self.btn_pesquisar)
 
     def ordenar_por_opcao(self, opcao):
-        self.wait_element_appears(self.select_ordenar_por)
-        self.select_option(self.select_ordenar_por, opcao)
+        self.aguardar_elemento_aparecer(self.select_ordenar_por)
+        self.selecionar_opcao_select(self.select_ordenar_por, opcao)
+        self.aguardar_elemento_aparecer(self.btn_calendario)
+        self.clicar(self.btn_calendario)
 
     def valor_propriedade_do_1_elemento(self, locator):
-        self.wait_element_appears(locator)
-        lista_valores = self.find_elements(locator)
+        self.aguardar_elemento_aparecer(locator)
+        lista_valores = self.encontrar_elementos(locator)
         return lista_valores[0].text
 
     def infos_1_elemento_lista(self):

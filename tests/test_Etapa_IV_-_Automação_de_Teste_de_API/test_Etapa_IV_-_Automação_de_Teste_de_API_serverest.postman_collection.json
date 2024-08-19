@@ -1,0 +1,275 @@
+{
+	"info": {
+		"_postman_id": "9fac6ccb-61e8-4281-9ccd-64e1dbcbb9f8",
+		"name": "test_Etapa_IV_-_Automação_de_Teste_de_API_serverest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34607397"
+	},
+	"item": [
+		{
+			"name": "test_ct04_serverest_criar_usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set(\"usuarioId\", jsonData._id)\r",
+							"pm.test('Deve registrar usuário com credenciais válidas', () => {\r",
+							"    pm.response.to.have.status(201)\r",
+							"    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const email = `bemoltest_${new Date().getTime()}@email.com`\r",
+							"pm.collectionVariables.set(\"usuarioEmail\", email)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\t\r\n{\r\n  \"nome\": \"Usuario Teste\",\r\n  \"email\": \"{{usuarioEmail}}\",\r\n  \"password\": \"teste\",\r\n  \"administrador\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/usuarios",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_ct05_serverest_buscar_usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test('Deve retornar usuário informando ID válido', () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.expect(jsonData._id).to.eql(pm.collectionVariables.get(\"usuarioId\"));\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/usuarios/{{usuarioId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"usuarios",
+						"{{usuarioId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_ct06_serverest_criar_produto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const produtoNome = `Produto ${new Date().getTime()}`\r",
+							"pm.collectionVariables.set(\"produtoNome\", produtoNome)\r",
+							"\r",
+							"const postRequest = {\r",
+							"    url: pm.collectionVariables.get(\"baseUrl\") + \"/login\",\r",
+							"    method: \"POST\",\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        options: {\r",
+							"            raw: {\r",
+							"                language: \"json\"\r",
+							"            }\r",
+							"        },\r",
+							"        raw: JSON.stringify({\r",
+							"            email: `${pm.collectionVariables.get(\"usuarioEmail\")}`,\r",
+							"            password: \"teste\"\r",
+							"        })\r",
+							"    }\r",
+							"}\r",
+							"// Autenticaçao de usuário para poder criar produto\r",
+							"pm.sendRequest(postRequest, function(err, res){\r",
+							"    let responseJson = res.json()\r",
+							"    let auth = responseJson[\"authorization\"].split(\" \")\r",
+							"    pm.collectionVariables.set(\"usuarioToken\", auth[1])\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set(\"produtoId\", jsonData._id)\r",
+							"pm.test('Deve registrar produto com informações válidas', () => {\r",
+							"    pm.response.to.have.status(201)\r",
+							"    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{usuarioToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"{{produtoNome}}\",\r\n  \"preco\": 470,\r\n  \"descricao\": \"Produto\",\r\n  \"quantidade\": 381\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/produtos",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_ct07_serverest_buscar_produto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test('Deve retornar produto informando ID válido', () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.expect(jsonData._id).to.eql(pm.collectionVariables.get(\"produtoId\"));\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/produtos/{{produtoId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos",
+						"{{produtoId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://serverest.dev",
+			"type": "string"
+		},
+		{
+			"key": "usuarioEmail",
+			"value": ""
+		},
+		{
+			"key": "usuarioId",
+			"value": ""
+		},
+		{
+			"key": "produtoNome",
+			"value": ""
+		},
+		{
+			"key": "usuarioToken",
+			"value": ""
+		},
+		{
+			"key": "produtoId",
+			"value": ""
+		}
+	]
+}
