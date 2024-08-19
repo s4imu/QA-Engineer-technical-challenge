@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9fac6ccb-61e8-4281-9ccd-64e1dbcbb9f8",
+		"_postman_id": "fccac3ae-b941-4cfa-9a8e-82afeb5736d5",
 		"name": "test_Etapa_IV_-_Automação_de_Teste_de_API_serverest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34607397"
@@ -71,7 +71,7 @@
 						"exec": [
 							"const jsonData = pm.response.json()\r",
 							"\r",
-							"pm.test('Deve retornar usuário informando ID válido', () => {\r",
+							"pm.test('Deve retornar usuário informando ID criado no cenário anterior', () => {\r",
 							"    pm.response.to.have.status(200)\r",
 							"    pm.expect(jsonData._id).to.eql(pm.collectionVariables.get(\"usuarioId\"));\r",
 							"})\r",
@@ -195,7 +195,7 @@
 						"exec": [
 							"const jsonData = pm.response.json()\r",
 							"\r",
-							"pm.test('Deve retornar produto informando ID válido', () => {\r",
+							"pm.test('Deve retornar produto informando ID criado no cenário anterior', () => {\r",
 							"    pm.response.to.have.status(200)\r",
 							"    pm.expect(jsonData._id).to.eql(pm.collectionVariables.get(\"produtoId\"));\r",
 							"})\r",
